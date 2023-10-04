@@ -46,7 +46,8 @@ RUN dnf install -y \
     starship \
     tmux \
     vim \
-    zoxide
+    zoxide \
+    util-linux-user
 
 FROM rust:latest AS lsd_builder
 RUN apt-get update && apt-get install -y git
@@ -67,5 +68,7 @@ RUN git clone -b master https://github.com/fastfetch-cli/fastfetch.git && \
     cmake --build . --target fastfetch --target flashfetch
 FROM base
 COPY --from=fastfetch_builder /tmp/fastfetch/build/fastfetch /usr/bin/fastfetch
+
+RUN chsh -s /usr/bin/fish ${WSL_USERNAME}
 
 RUN dnf clean all
